@@ -1,0 +1,719 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Personal Soundtrack</title>
+  <base target="_self">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@preline/preline@2.0.0/dist/preline.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    happy: '#FDE047',
+                    sad: '#60A5FA',
+                    angry: '#F87171',
+                    calm: '#34D399',
+                    excited: '#F472B6',
+                    nostalgic: '#A78BFA',
+                    love: '#FB7185',
+                    anxious: '#A3E635',
+                    hopeful: '#22D3EE',
+                    energetic: '#F59E0B',
+                    lonely: '#93C5FD',
+                    grateful: '#10B981',
+                    focused: '#8B5CF6',
+                    playful: '#EC4899'
+                }
+            }
+        }
+    }
+  </script>
+  <style>
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    .playlist-item:hover {
+        transform: translateX(5px);
+        transition: transform 0.2s ease;
+    }
+    .emotion-btn:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+    }
+    .dark .gradient-bg {
+      background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
+    }
+    .music-player {
+      background: linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.5));
+    }
+    .dark .music-player {
+      background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
+    }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+    }
+    .progress {
+      height: 100%;
+      background: #3B82F6;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    .waveform {
+      height: 40px;
+      background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg"><path d="M0 10 L5 10 L7 5 L10 15 L15 5 L20 15 L25 5 L30 15 L35 5 L40 15 L45 5 L50 15 L55 5 L60 15 L65 5 L70 15 L75 5 L80 15 L85 5 L90 15 L95 5 L100 10" stroke="rgba(255,255,255,0.5)" fill="none" stroke-width="1"/></svg>') repeat-x;
+      background-size: 100px 20px;
+      animation: wave 2s linear infinite;
+    }
+    @keyframes wave {
+      0% { background-position-x: 0; }
+      100% { background-position-x: 100px; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+<div class="bg-music-pattern bg-cover bg-center bg-no-repeat bg-fixed">
+  <div class="gradient-bg min-h-screen">
+    <!-- Main Menu -->
+    <div id="mainMenu" class="container mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-screen">
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-2xl p-8 w-full max-w-md">
+        <h1 class="text-4xl font-bold text-center text-gray-800 dark:text-white mb-8">🎧 My Personal Soundtrack</h1>
+
+        <div class="space-y-4">
+          <button onclick="showSection('emotional')" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg text-lg font-medium flex items-center justify-center gap-3 transition-all transform hover:scale-105">
+            <i class="fas fa-heart"></i> Emotional Soundtrack
+          </button>
+
+          <button onclick="showSection('wordSeeking')" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-3 px-6 rounded-lg text-lg font-medium flex items-center justify-center gap-3 transition-all transform hover:scale-105">
+            <i class="fas fa-search"></i> Word Seeking
+          </button>
+
+          <button onclick="signOut()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg text-lg font-medium flex items-center justify-center gap-3 transition-all transform hover:scale-105">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </button>
+        </div>
+
+        <div class="mt-8 text-center text-gray-500 dark:text-gray-400">
+          <p>Connect and seek your emotions with the perfect music</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emotional Soundtrack Section -->
+    <div id="emotionalSection" class="hidden container mx-auto px-4 py-8">
+      <header class="flex items-center justify-between mb-8">
+        <button onclick="showSection('mainMenu')" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white p-2 rounded-full">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-white">💝 Emotional Soundtrack</h1>
+        <div class="w-8"></div> <!-- Spacer for alignment -->
+      </header>
+
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6 mb-8">
+        <p class="text-gray-600 dark:text-gray-300 mb-4">How are you feeling today? Tell us in your own words:</p>
+
+        <div class="relative mb-6">
+          <input type="text" id="emotionInput" placeholder="e.g. 'I'm feeling down today' or 'I'm so excited!!'"
+                 class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button onclick="detectEmotion()" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-lg transition-colors">
+            Analyze
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 mb-6">
+          <button onclick="quickEmotion('happy')" class="emotion-btn bg-happy/20 hover:bg-happy/30 text-happy dark:text-happy-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            😊 Happy
+          </button>
+          <button onclick="quickEmotion('sad')" class="emotion-btn bg-sad/20 hover:bg-sad/30 text-sad dark:text-sad-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            😢 Sad
+          </button>
+          <button onclick="quickEmotion('angry')" class="emotion-btn bg-angry/20 hover:bg-angry/30 text-angry dark:text-angry-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            😠 Angry
+          </button>
+          <button onclick="quickEmotion('calm')" class="emotion-btn bg-calm/20 hover:bg-calm/30 text-calm dark:text-calm-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🧘 Calm
+          </button>
+          <button onclick="quickEmotion('excited')" class="emotion-btn bg-excited/20 hover:bg-excited/30 text-excited dark:text-excited-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🎉 Excited
+          </button>
+          <button onclick="quickEmotion('nostalgic')" class="emotion-btn bg-nostalgic/20 hover:bg-nostalgic/30 text-nostalgic dark:text-nostalgic-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            📻 Nostalgic
+          </button>
+          <button onclick="quickEmotion('love')" class="emotion-btn bg-love/20 hover:bg-love/30 text-love dark:text-love-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            ❤️ Love
+          </button>
+          <button onclick="quickEmotion('anxious')" class="emotion-btn bg-anxious/20 hover:bg-anxious/30 text-anxious dark:text-anxious-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            😰 Anxious
+          </button>
+          <button onclick="quickEmotion('hopeful')" class="emotion-btn bg-hopeful/20 hover:bg-hopeful/30 text-hopeful dark:text-hopeful-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🌈 Hopeful
+          </button>
+          <button onclick="quickEmotion('energetic')" class="emotion-btn bg-energetic/20 hover:bg-energetic/30 text-energetic dark:text-energetic-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            ⚡ Energetic
+          </button>
+          <button onclick="quickEmotion('lonely')" class="emotion-btn bg-lonely/20 hover:bg-lonely/30 text-lonely dark:text-lonely-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🌃 Lonely
+          </button>
+          <button onclick="quickEmotion('grateful')" class="emotion-btn bg-grateful/20 hover:bg-grateful/30 text-grateful dark:text-grateful-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🙏 Grateful
+          </button>
+          <button onclick="quickEmotion('focused')" class="emotion-btn bg-focused/20 hover:bg-focused/30 text-focused dark:text-focused-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🎯 Focused
+          </button>
+          <button onclick="quickEmotion('playful')" class="emotion-btn bg-playful/20 hover:bg-playful/30 text-playful dark:text-playful-700 py-2 px-3 rounded-lg flex items-center justify-center gap-1 text-sm">
+            🎭 Playful
+          </button>
+        </div>
+
+        <div id="emotionResult" class="hidden fade-in">
+          <div id="emotionTheme" class="rounded-lg p-4 mb-4 text-white">
+            <p id="emotionQuote" class="text-lg italic mb-2"></p>
+            <p class="text-sm">Your <span id="emotionName" class="font-bold"></span> playlist</p>
+          </div>
+
+          <div id="emotionPlaylist" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+            <!-- Playlist items will be inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Music Player (hidden by default) -->
+      <div id="musicPlayer" class="hidden music-player rounded-xl shadow-lg text-white p-4 mb-8">
+        <div class="flex items-center gap-4 mb-4">
+          <img id="playerAlbumArt" src="https://via.placeholder.com/80" alt="Album Art" class="w-16 h-16 rounded-lg">
+          <div class="flex-1">
+            <h3 id="playerTitle" class="font-bold text-lg">Song Title</h3>
+            <p id="playerArtist" class="text-gray-300 text-sm">Artist Name</p>
+          </div>
+          <button id="playerPlayBtn" class="bg-blue-500 hover:bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center">
+            <i class="fas fa-play"></i>
+          </button>
+        </div>
+
+        <div class="progress-bar rounded-full mb-2">
+          <div id="playerProgress" class="progress rounded-full"></div>
+        </div>
+
+        <div class="flex justify-between text-xs text-gray-300 mb-4">
+          <span id="playerCurrentTime">0:00</span>
+          <span id="playerDuration">3:30</span>
+        </div>
+
+        <div class="waveform mb-4"></div>
+
+        <div class="flex justify-center gap-6">
+          <button class="text-gray-300 hover:text-white">
+            <i class="fas fa-step-backward"></i>
+          </button>
+          <button id="playerMainBtn" class="bg-blue-500 hover:bg-blue-600 w-12 h-12 rounded-full flex items-center justify-center">
+            <i class="fas fa-play"></i>
+          </button>
+          <button class="text-gray-300 hover:text-white">
+            <i class="fas fa-step-forward"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Word Seeking Section -->
+    <div id="wordSeekingSection" class="hidden container mx-auto px-4 py-8">
+      <header class="flex items-center justify-between mb-8">
+        <button onclick="showSection('mainMenu')" class="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white p-2 rounded-full">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-white">👀 Word Seeking</h1>
+        <div class="w-8"></div> <!-- Spacer for alignment -->
+      </header>
+
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
+        <p class="text-gray-600 dark:text-gray-300 mb-6">Search for music by keyword like "sunshine" or "heartbreak":</p>
+
+        <div class="flex mb-6">
+          <input type="text" id="searchKeyword" placeholder="Enter a keyword in English, Spanish or French..."
+                 class="flex-grow px-4 py-2 rounded-l-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button onclick="searchMusic()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+
+        <div id="searchResults" class="hidden fade-in">
+          <h3 class="text-xl font-medium text-gray-800 dark:text-white mb-4">Results for "<span id="searchTerm"></span>"</h3>
+          <div id="musicResults" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+            <!-- Search results will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-12 text-center text-gray-500 dark:text-gray-400 text-sm">
+      <p>My Personal Soundtrack - Connect your emotions with music</p>
+      <p class="mt-1">© 2025 All rights reserved</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+  // Emotion data with synonyms for detection
+  const emotions = {
+      happy: {
+          keywords: ['happy', 'joyful', 'cheerful', 'glad', 'delighted', 'ecstatic', 'merry', 'content', 'pleased', 'upbeat', 'feliz', 'contento', 'alegre', 'heureux', 'joyeux'],
+          quote: "Happiness is not something ready made. It comes from your own actions.",
+          author: "Dalai Lama",
+          emoji: "😊",
+          songs: [
+              { title: "Happy", artist: "Pharrell Williams", duration: "3:53", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Don't Stop Me Now", artist: "Queen", duration: "3:29", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Walking on Sunshine", artist: "Katrina and the Waves", duration: "3:43", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Vivir Mi Vida", artist: "Marc Anthony", duration: "4:12", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "La Vie En Rose", artist: "Édith Piaf", duration: "3:07", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      sad: {
+          keywords: ['sad', 'down', 'depressed', 'blue', 'unhappy', 'melancholy', 'gloomy', 'heartbroken', 'miserable', 'sorrowful', 'triste', 'deprimido', 'apenado', 'tristesse', 'malheureux'],
+          quote: "Tears are words that need to be written.",
+          author: "Paulo Coelho",
+          emoji: "😢",
+          songs: [
+              { title: "Someone Like You", artist: "Adele", duration: "4:45", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Hurt", artist: "Johnny Cash", duration: "3:38", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Amor Eterno", artist: "Rocío Dúrcal", duration: "6:50", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Ne me quitte pas", artist: "Jacques Brel", duration: "4:12", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" },
+              { title: "Everybody Hurts", artist: "R.E.M.", duration: "5:20", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" }
+          ]
+      },
+      angry: {
+          keywords: ['angry', 'mad', 'furious', 'irritated', 'annoyed', 'frustrated', 'enraged', 'outraged', 'livid', 'upset', 'enojado', 'furioso', 'molesto', 'en colère', 'fâché'],
+          quote: "For every minute you remain angry, you give up sixty seconds of peace of mind.",
+          author: "Ralph Waldo Emerson",
+          emoji: "😠",
+          songs: [
+              { title: "Break Stuff", artist: "Limp Bizkit", duration: "2:46", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Killing in the Name", artist: "Rage Against the Machine", duration: "5:13", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Du Hast", artist: "Rammstein", duration: "3:54", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "de" },
+              { title: "Maldita Traición", artist: "Alejandro Sanz", duration: "4:17", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Je suis malade", artist: "Serge Lama", duration: "4:40", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      calm: {
+          keywords: ['calm', 'peaceful', 'relaxed', 'serene', 'tranquil', 'chill', 'mellow', 'laid-back', 'composed', 'cool', 'tranquilo', 'relajado', 'calma', 'calme', 'paisible'],
+          quote: "Calm mind brings inner strength and self-confidence, so that's very important for good health.",
+          author: "Dalai Lama",
+          emoji: "🧘",
+          songs: [
+              { title: "Weightless", artist: "Marconi Union", duration: "8:00", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Clair de Lune", artist: "Claude Debussy", duration: "5:02", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" },
+              { title: "Burbujas de Amor", artist: "Juan Luis Guerra", duration: "4:10", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "River Flows in You", artist: "Yiruma", duration: "3:10", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Gymnopédie No.1", artist: "Erik Satie", duration: "3:34", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      excited: {
+          keywords: ['excited', 'thrilled', 'pumped', 'energized', 'stoked', 'psyched', 'eager', 'enthusiastic', 'animated', 'jubilant', 'emocionado', 'entusiasmado', 'excitado', 'excité', 'enthousiaste'],
+          quote: "Excitement is the electricity of life. How do you get it? You act as if you're excited.",
+          author: "Gordon Parks",
+          emoji: "🎉",
+          songs: [
+              { title: "Thunderstruck", artist: "AC/DC", duration: "4:52", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Eye of the Tiger", artist: "Survivor", duration: "4:05", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Vivir Mi Vida", artist: "Marc Anthony", duration: "4:12", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "We Will Rock You", artist: "Queen", duration: "2:02", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Dernière Danse", artist: "Indila", duration: "3:31", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      nostalgic: {
+          keywords: ['nostalgic', 'sentimental', 'wistful', 'homesick', 'yearning', 'longing', 'reminiscent', 'remembering', 'melancholic', 'retro', 'nostálgico', 'recordando', 'añoranza', 'nostalgique', 'souvenir'],
+          quote: "Nostalgia is a file that removes the rough edges from the good old days.",
+          author: "Doug Larson",
+          emoji: "📻",
+          songs: [
+              { title: "Yesterday", artist: "The Beatles", duration: "2:05", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Bohemian Rhapsody", artist: "Queen", duration: "5:55", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Ojalá", artist: "Silvio Rodríguez", duration: "3:32", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Hotel California", artist: "Eagles", duration: "6:30", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Ne me quitte pas", artist: "Jacques Brel", duration: "4:12", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      love: {
+          keywords: ['love', 'romantic', 'affectionate', 'loving', 'passionate', 'adoring', 'fond', 'devoted', 'infatuated', 'enamored', 'amor', 'cariño', 'enamorado', 'amour', 'aimer'],
+          quote: "Where there is love there is life.",
+          author: "Mahatma Gandhi",
+          emoji: "❤️",
+          songs: [
+              { title: "Perfect", artist: "Ed Sheeran", duration: "4:23", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Bésame Mucho", artist: "Consuelo Velázquez", duration: "2:59", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "All of Me", artist: "John Legend", duration: "4:29", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Je t'aime... moi non plus", artist: "Serge Gainsbourg & Jane Birkin", duration: "4:22", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" },
+              { title: "Thinking Out Loud", artist: "Ed Sheeran", duration: "4:41", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" }
+          ]
+      },
+      anxious: {
+          keywords: ['anxious', 'nervous', 'worried', 'stressed', 'tense', 'apprehensive', 'uneasy', 'restless', 'jittery', 'panicked', 'ansioso', 'nervioso', 'preocupado', 'anxieux', 'nerveux'],
+          quote: "Anxiety does not empty tomorrow of its sorrows, but only empties today of its strength.",
+          author: "Charles Spurgeon",
+          emoji: "😰",
+          songs: [
+              { title: "Breathe Me", artist: "Sia", duration: "4:32", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Weightless", artist: "Marconi Union", duration: "8:00", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Reloj", artist: "Luis Miguel", duration: "3:02", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Someone You Loved", artist: "Lewis Capaldi", duration: "3:02", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Je suis malade", artist: "Serge Lama", duration: "4:40", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      hopeful: {
+          keywords: ['hopeful', 'optimistic', 'positive', 'encouraged', 'expectant', 'confident', 'promising', 'bright', 'auspicious', 'esperanzado', 'optimista', 'alentador', 'plein d\'espoir', 'optimiste'],
+          quote: "Hope is being able to see that there is light despite all of the darkness.",
+          author: "Desmond Tutu",
+          emoji: "🌈",
+          songs: [
+              { title: "Here Comes the Sun", artist: "The Beatles", duration: "3:05", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "What a Wonderful World", artist: "Louis Armstrong", duration: "2:19", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Color Esperanza", artist: "Diego Torres", duration: "4:27", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Imagine", artist: "John Lennon", duration: "3:04", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "On écrit sur les murs", artist: "Kids United", duration: "3:11", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      energetic: {
+          keywords: ['energetic', 'lively', 'vibrant', 'dynamic', 'active', 'peppy', 'spirited', 'vigorous', 'animated', 'zesty', 'energético', 'animado', 'vibrante', 'énergique', 'dynamique'],
+          quote: "Energy and persistence conquer all things.",
+          author: "Benjamin Franklin",
+          emoji: "⚡",
+          songs: [
+              { title: "Thunderstruck", artist: "AC/DC", duration: "4:52", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Gasolina", artist: "Daddy Yankee", duration: "3:12", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Eye of the Tiger", artist: "Survivor", duration: "4:05", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "We Will Rock You", artist: "Queen", duration: "2:02", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Alors on danse", artist: "Stromae", duration: "3:26", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      lonely: {
+          keywords: ['lonely', 'alone', 'isolated', 'solitary', 'lonesome', 'deserted', 'abandoned', 'forsaken', 'secluded', 'solo', 'solitario', 'aislado', 'solo', 'seul', 'isolé'],
+          quote: "Music was my refuge. I could crawl into the space between the notes and curl my back to loneliness.",
+          author: "Maya Angelou",
+          emoji: "🌃",
+          songs: [
+              { title: "The Sound of Silence", artist: "Simon & Garfunkel", duration: "3:05", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Solamente tú", artist: "Pablo Alborán", duration: "4:07", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Hurt", artist: "Johnny Cash", duration: "3:38", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Someone Like You", artist: "Adele", duration: "4:45", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Je suis seul ce soir", artist: "Gilbert Bécaud", duration: "3:25", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      grateful: {
+          keywords: ['grateful', 'thankful', 'appreciative', 'indebted', 'obliged', 'contented', 'satisfied', 'blessed', 'agradecido', 'agradecida', 'reconocido', 'reconnaissant', 'reconnaissante'],
+          quote: "Gratitude turns what we have into enough, and more. It turns denial into acceptance, chaos into order, confusion into clarity.",
+          author: "Melody Beattie",
+          emoji: "🙏",
+          songs: [
+              { title: "Thank You", artist: "Dido", duration: "3:38", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Gracias a la Vida", artist: "Violeta Parra", duration: "4:32", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "What a Wonderful World", artist: "Louis Armstrong", duration: "2:19", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Count on Me", artist: "Bruno Mars", duration: "3:17", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Merci", artist: "Stromae", duration: "3:53", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      },
+      focused: {
+          keywords: ['focused', 'concentrated', 'attentive', 'absorbed', 'engrossed', 'determined', 'fixed', 'intent', 'enfocado', 'concentrado', 'atento', 'concentré', 'focalisé'],
+          quote: "Concentrate all your thoughts upon the work at hand. The sun's rays do not burn until brought to a focus.",
+          author: "Alexander Graham Bell",
+          emoji: "🎯",
+          songs: [
+              { title: "Focus", artist: "Hocus Pocus", duration: "3:15", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Concentración", artist: "Meditación Profunda", duration: "5:00", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "Weightless", artist: "Marconi Union", duration: "8:00", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Clair de Lune", artist: "Claude Debussy", duration: "5:02", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" },
+              { title: "River Flows in You", artist: "Yiruma", duration: "3:10", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" }
+          ]
+      },
+      playful: {
+          keywords: ['playful', 'fun', 'lively', 'frisky', 'mischievous', 'frolicsome', 'jovial', 'jocular', 'joking', 'juguetón', 'divertido', 'travieso', 'joueur', 'enjoué'],
+          quote: "We don't stop playing because we grow old; we grow old because we stop playing.",
+          author: "George Bernard Shaw",
+          emoji: "🎭",
+          songs: [
+              { title: "Happy", artist: "Pharrell Williams", duration: "3:53", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "La Bamba", artist: "Ritchie Valens", duration: "2:06", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "es" },
+              { title: "I Gotta Feeling", artist: "The Black Eyed Peas", duration: "4:49", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Don't Stop Me Now", artist: "Queen", duration: "3:29", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "en" },
+              { title: "Dernière Danse", artist: "Indila", duration: "3:31", preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/5e/5b/3d/5e5b3df4-5a3d-5d7f-7a5e-3e8a3a0a5a5a/mzaf_13341178261601361485.plus.aac.p.m4a", lang: "fr" }
+          ]
+      }
+  };
+
+  // Audio player variables
+  let audioPlayer = new Audio();
+  let isPlaying = false;
+  let currentTrack = null;
+  let progressInterval = null;
+
+  // Show different sections
+  function showSection(section) {
+      document.getElementById('mainMenu').classList.add('hidden');
+      document.getElementById('emotionalSection').classList.add('hidden');
+      document.getElementById('wordSeekingSection').classList.add('hidden');
+
+      if (section === 'mainMenu') {
+          document.getElementById('mainMenu').classList.remove('hidden');
+      } else if (section === 'emotional') {
+          document.getElementById('emotionalSection').classList.remove('hidden');
+      } else if (section === 'wordSeeking') {
+          document.getElementById('wordSeekingSection').classList.remove('hidden');
+      }
+  }
+
+  // Sign out function
+  function signOut() {
+      // In a real app, this would log the user out
+      alert("You have been signed out. Thanks for using My Personal Soundtrack!");
+      showSection('mainMenu');
+  }
+
+  // Detect emotion from natural language input
+  function detectEmotion() {
+      const input = document.getElementById('emotionInput').value.toLowerCase();
+      if (!input.trim()) return;
+
+      let detectedEmotion = null;
+      let highestScore = 0;
+
+      // Check for each emotion's keywords
+      for (const [emotion, data] of Object.entries(emotions)) {
+          let score = 0;
+          data.keywords.forEach(keyword => {
+              if (input.includes(keyword)) {
+                  score += 1;
+              }
+          });
+
+          if (score > highestScore) {
+              highestScore = score;
+              detectedEmotion = emotion;
+          }
+      }
+
+      if (detectedEmotion) {
+          showEmotionResult(detectedEmotion);
+      } else {
+          // Default to happy if no emotion detected
+          showEmotionResult('happy');
+      }
+  }
+
+  // Quick emotion selection
+  function quickEmotion(emotion) {
+      document.getElementById('emotionInput').value = `I'm feeling ${emotion}`;
+      showEmotionResult(emotion);
+  }
+
+  // Show emotion result
+  function showEmotionResult(emotion) {
+      const emotionData = emotions[emotion];
+      const emotionResult = document.getElementById('emotionResult');
+      const emotionTheme = document.getElementById('emotionTheme');
+      const emotionQuote = document.getElementById('emotionQuote');
+      const emotionName = document.getElementById('emotionName');
+      const emotionPlaylist = document.getElementById('emotionPlaylist');
+
+      // Set theme and quote
+      emotionTheme.className = `rounded-lg p-4 mb-4 text-white bg-${emotion} dark:bg-${emotion}-700 fade-in`;
+      emotionQuote.textContent = `${emotionData.emoji} "${emotionData.quote}" — ${emotionData.author}`;
+      emotionName.textContent = emotion.charAt(0).toUpperCase() + emotion.slice(1);
+
+      // Generate playlist
+      emotionPlaylist.innerHTML = '';
+      emotionData.songs.forEach((song, index) => {
+          const songItem = document.createElement('div');
+          songItem.className = `playlist-item bg-gray-100 dark:bg-gray-700 p-3 rounded-lg flex justify-between items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors`;
+          songItem.innerHTML = `
+              <div class="flex items-center gap-3">
+                  <span class="text-gray-500 dark:text-gray-400 w-6 text-center">${index + 1}</span>
+                  <div>
+                      <p class="font-medium text-gray-800 dark:text-white">${song.title}</p>
+                      <p class="text-sm text-gray-600 dark:text-gray-300">${song.artist} <span class="text-xs px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-600">${song.lang.toUpperCase()}</span></p>
+                  </div>
+              </div>
+              <div class="flex items-center gap-2">
+                  <span class="text-gray-500 dark:text-gray-400">${song.duration}</span>
+                  <button onclick="playPreview(event, '${song.preview}', '${song.title}', '${song.artist}')" class="text-blue-500 hover:text-blue-600">
+                      <i class="fas fa-play"></i>
+                  </button>
+              </div>
+          `;
+          emotionPlaylist.appendChild(songItem);
+      });
+
+      // Show results
+      emotionResult.classList.remove('hidden');
+  }
+
+  // Play song preview
+  function playPreview(event, previewUrl, title, artist) {
+      event.stopPropagation();
+
+      // Stop current playback
+      if (isPlaying) {
+          stopPlayback();
+      }
+
+      // Set up new track
+      currentTrack = { previewUrl, title, artist };
+      audioPlayer.src = previewUrl;
+
+      // Update player UI
+      document.getElementById('playerTitle').textContent = title;
+      document.getElementById('playerArtist').textContent = artist;
+      document.getElementById('playerAlbumArt').src = "https://via.placeholder.com/80";
+      document.getElementById('playerDuration').textContent = "0:30"; // Previews are usually 30s
+
+      // Show player
+      document.getElementById('musicPlayer').classList.remove('hidden');
+
+      // Play
+      audioPlayer.play()
+          .then(() => {
+              isPlaying = true;
+              document.getElementById('playerPlayBtn').innerHTML = '<i class="fas fa-pause"></i>';
+              document.getElementById('playerMainBtn').innerHTML = '<i class="fas fa-pause"></i>';
+
+              // Start progress tracking
+              progressInterval = setInterval(updateProgress, 100);
+          })
+          .catch(error => {
+              console.error("Playback failed:", error);
+              alert("Could not play the preview. Please try another song.");
+          });
+  }
+
+  // Toggle play/pause
+  function togglePlayback() {
+      if (!currentTrack) return;
+
+      if (isPlaying) {
+          audioPlayer.pause();
+          document.getElementById('playerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+          document.getElementById('playerMainBtn').innerHTML = '<i class="fas fa-play"></i>';
+          isPlaying = false;
+          if (progressInterval) clearInterval(progressInterval);
+      } else {
+          audioPlayer.play()
+              .then(() => {
+                  document.getElementById('playerPlayBtn').innerHTML = '<i class="fas fa-pause"></i>';
+                  document.getElementById('playerMainBtn').innerHTML = '<i class="fas fa-pause"></i>';
+                  isPlaying = true;
+                  progressInterval = setInterval(updateProgress, 100);
+              });
+      }
+  }
+
+  // Stop playback completely
+  function stopPlayback() {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      isPlaying = false;
+      document.getElementById('playerPlayBtn').innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById('playerMainBtn').innerHTML = '<i class="fas fa-play"></i>';
+      document.getElementById('playerProgress').style.width = '0%';
+      document.getElementById('playerCurrentTime').textContent = '0:00';
+      if (progressInterval) clearInterval(progressInterval);
+  }
+
+  // Update progress bar
+  function updateProgress() {
+      if (audioPlayer.duration) {
+          const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+          document.getElementById('playerProgress').style.width = `${progress}%`;
+
+          // Update current time display
+          const currentMinutes = Math.floor(audioPlayer.currentTime / 60);
+          const currentSeconds = Math.floor(audioPlayer.currentTime % 60).toString().padStart(2, '0');
+          document.getElementById('playerCurrentTime').textContent = `${currentMinutes}:${currentSeconds}`;
+      }
+
+      // Check if playback ended
+      if (audioPlayer.ended) {
+          stopPlayback();
+      }
+  }
+
+  // Search music using iTunes API
+  async function searchMusic() {
+      const keyword = document.getElementById('searchKeyword').value.trim();
+      if (!keyword) return;
+
+      const searchResults = document.getElementById('searchResults');
+      const searchTerm = document.getElementById('searchTerm');
+      const musicResults = document.getElementById('musicResults');
+
+      searchTerm.textContent = keyword;
+      musicResults.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i><p class="mt-2 text-gray-500 dark:text-gray-400">Searching for music...</p></div>';
+      searchResults.classList.remove('hidden');
+
+      try {
+          const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(keyword)}&media=music&limit=10`);
+          const data = await response.json();
+
+          musicResults.innerHTML = '';
+
+          if (data.results.length === 0) {
+              musicResults.innerHTML = '<div class="text-center py-4 text-gray-500 dark:text-gray-400">No results found. Try a different keyword.</div>';
+              return;
+          }
+
+        data.results.forEach((track, index) => {
+            const trackItem = document.createElement('div');
+            trackItem.className = `playlist-item bg-gray-100 dark:bg-gray-700 p-3 rounded-lg flex justify-between items-center cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors`;
+            trackItem.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="text-gray-500 dark:text-gray-400 w-6 text-center">${index + 1}</span>
+                    <img src="${track.artworkUrl60}" alt="${track.trackName}" class="w-10 h-10 rounded">
+                    <div>
+                        <p class="font-medium text-gray-800 dark:text-white">${track.trackName || 'Unknown'}</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">${track.artistName || 'Unknown'}</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-500 dark:text-gray-400">${track.trackTimeMillis ? formatDuration(track.trackTimeMillis) : '--:--'}</span>
+                    <a href="${track.trackViewUrl}" class="text-blue-500 hover:text-blue-600" onclick="event.preventDefault(); window.open('${track.trackViewUrl}', '_blank');">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            `;
+            musicResults.appendChild(trackItem);
+        });
+    } catch (error) {
+        console.error('Error fetching music:', error);
+        musicResults.innerHTML = '<div class="text-center py-4 text-red-500">Failed to fetch results. Please try again later.</div>';
+    }
+}
+
+// Format milliseconds to MM:SS
+function formatDuration(ms) {
+    const minutes = Math.floor(ms / 60000);
+    const seconds = ((ms % 60000) / 1000).toFixed(0);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+// Prevent default anchor behavior
+document.querySelectorAll('a').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (this.href) {
+            window.open(this.href, '_blank');
+        }
+    });
+});
+</script>
+</body>
+</html>
